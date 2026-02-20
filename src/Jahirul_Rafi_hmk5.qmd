@@ -1,0 +1,53 @@
+---
+title: "Jahirul_Rafi_hmk5"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Q1
+
+Codes for Q1
+
+```{r}
+#lodaing the sample_data,csv
+students <- read.csv("data/sample_data.csv")
+#cleaning out the n/a's
+ students <- read.csv("data/sample_data.csv", na = c("N/A", ""))
+#removing space in the coloum name
+ students |> janitor::clean_names()
+#making meal_plan into factor and age
+ students |> mutate( mealPlan = factor(mealPlan), AGE = parse_number(if_else(AGE == "five", "5", AGE)))
+```
+
+## Q2
+
+code for question 2
+
+```{r}
+#loading the colloquium file
+col2 <- read.csv("data/colloquium_assessment.csv")
+Header <- read_csv("data/colloquium_assessment.csv", n_max = 0)
+#making the dataset long for calculation
+col_long <- col2 %>%
+  mutate(response_id = row_number()) %>%       
+  pivot_longer(
+    cols = Q7:Q10,                              
+    names_to = "question",
+    values_to = "score"
+  )
+```
+
+## Q3
+
+```{r}
+#calculating the average
+avg_q7_10_long <- col_long %>%
+  mutate(score = as.numeric(score)) %>%
+  group_by(question) %>%
+  summarise(mean_score = mean(score, na.rm = TRUE))
+glimpse(avg_q7_10_long)
+```
